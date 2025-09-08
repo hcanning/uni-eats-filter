@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { MealFilters, DietaryRestriction } from '@/types/meal';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Slider } from '@/components/ui/slider';
+import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { 
   DropdownMenu, 
@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { Filter, X, ChevronDown } from 'lucide-react';
+import { Filter, X, ChevronDown, DollarSign } from 'lucide-react';
 
 interface TopFiltersProps {
   filters: MealFilters;
@@ -65,12 +65,13 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
     });
   };
 
-  const handleMaxPriceChange = (value: number[]) => {
-    const newMaxPrice = value[0];
-    setMaxPrice(newMaxPrice);
+  const handleMaxPriceChange = (value: string) => {
+    const numValue = parseFloat(value) || 0;
+    const validValue = Math.min(Math.max(numValue, 0), 25); // Clamp between 0 and 25
+    setMaxPrice(validValue);
     onFiltersChange({
       ...filters,
-      maxPrice: newMaxPrice,
+      maxPrice: validValue,
     });
   };
 
@@ -160,18 +161,25 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Price Slider */}
-            <div className="flex items-center gap-3 min-w-[400px] max-w-[500px]">
-              <span className="text-sm text-muted-foreground whitespace-nowrap">Max Price:</span>
-              <Slider
-                value={[maxPrice]}
-                onValueChange={handleMaxPriceChange}
-                max={25}
-                min={0}
-                step={0.5}
-                className="flex-1"
-              />
-              <span className="text-sm font-medium min-w-[50px]">${maxPrice.toFixed(2)}</span>
+            {/* Price Input */}
+            <div className="flex items-center gap-2 min-w-[180px]">
+              <label htmlFor="max-price" className="text-sm text-muted-foreground whitespace-nowrap">
+                Max Price:
+              </label>
+              <div className="relative">
+                <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  id="max-price"
+                  type="number"
+                  min="0"
+                  max="25"
+                  step="0.5"
+                  value={maxPrice}
+                  onChange={(e) => handleMaxPriceChange(e.target.value)}
+                  className="pl-9 w-24"
+                  placeholder="25.00"
+                />
+              </div>
             </div>
           </div>
 
