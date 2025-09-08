@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { mockMeals, saveMealsToStorage, loadMealsFromStorage } from '@/data/mealLoader';
+import { mealsService } from '@/services/mealsService';
 import { Meal, MealFormData } from '@/types/meal';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,18 +13,36 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 
 const AdminDashboard = () => {
-  const [meals, setMeals] = useState<Meal[]>(loadMealsFromStorage());
-
-  // Save to localStorage whenever meals change
-  useEffect(() => {
-    saveMealsToStorage(meals);
-  }, [meals]);
+  const [meals, setMeals] = useState<Meal[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const { toast } = useToast();
   const { logout } = useAuth();
+
+  // Load meals on component mount
+  useEffect(() => {
+    const loadMeals = async () => {
+      try {
+        setLoading(true);
+        const mealsData = await mealsService.getAllMeals();
+        setMeals(mealsData);
+      } catch (error) {
+        console.error('Failed to load meals:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load meals. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMeals();
+  }, [toast]);
 
   const categories = ['all', 'breakfast', 'lunch', 'dinner', 'snack', 'beverage'];
 
@@ -35,56 +53,88 @@ const AdminDashboard = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleCreateMeal = (formData: MealFormData) => {
-    const newMeal: Meal = {
-      ...formData,
-      id: Date.now().toString(),
-      isAvailable: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    
-    setMeals([...meals, newMeal]);
-    setIsFormOpen(false);
-    toast({
-      title: "Meal created",
-      description: `${newMeal.name} has been added to the menu.`,
-    });
+  const handleCreateMeal = async (formData: MealFormData) => {
+    try {
+      const newMeal = await mealsService.createMeal(formData);
+      setMeals([newMeal, ...meals]);
+      setIsFormOpen(false);
+      toast({
+        title: "Meal created",
+        description: `${newMeal.name} has been added to the menu.`,
+      });
+    } catch (error) {
+      console.error('Failed to create meal:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create meal. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleUpdateMeal = (formData: MealFormData) => {
+  const handleUpdateMeal = async (formData: MealFormData) => {
     if (!editingMeal) return;
     
-    const updatedMeal: Meal = {
-      ...editingMeal,
-      ...formData,
-      updatedAt: new Date(),
-    };
-    
-    setMeals(meals.map(meal => meal.id === editingMeal.id ? updatedMeal : meal));
-    setEditingMeal(null);
-    toast({
-      title: "Meal updated",
-      description: `${updatedMeal.name} has been updated.`,
-    });
+    try {
+      const updatedMeal = await mealsService.updateMeal(editingMeal.id, formData);
+      setMeals(meals.map(meal => meal.id === editingMeal.id ? updatedMeal : meal));
+      setEditingMeal(null);
+      toast({
+        title: "Meal updated",
+        description: `${updatedMeal.name} has been updated.`,
+      });
+    } catch (error) {
+      console.error('Failed to update meal:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update meal. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleDeleteMeal = (mealId: string) => {
+  const handleDeleteMeal = async (mealId: string) => {
     const meal = meals.find(m => m.id === mealId);
-    setMeals(meals.filter(meal => meal.id !== mealId));
-    toast({
-      title: "Meal deleted",
-      description: `${meal?.name} has been removed from the menu.`,
-      variant: "destructive",
-    });
+    if (!meal) return;
+
+    try {
+      await mealsService.deleteMeal(mealId);
+      setMeals(meals.filter(meal => meal.id !== mealId));
+      toast({
+        title: "Meal deleted",
+        description: `${meal.name} has been removed from the menu.`,
+        variant: "destructive",
+      });
+    } catch (error) {
+      console.error('Failed to delete meal:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete meal. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const toggleMealAvailability = (mealId: string) => {
-    setMeals(meals.map(meal => 
-      meal.id === mealId 
-        ? { ...meal, isAvailable: !meal.isAvailable, updatedAt: new Date() }
-        : meal
-    ));
+  const toggleMealAvailability = async (mealId: string) => {
+    const meal = meals.find(m => m.id === mealId);
+    if (!meal) return;
+
+    try {
+      const updatedMeal = await mealsService.toggleMealAvailability(mealId, !meal.isAvailable);
+      setMeals(meals.map(m => m.id === mealId ? updatedMeal : m));
+      
+      toast({
+        title: `Meal ${updatedMeal.isAvailable ? 'enabled' : 'disabled'}`,
+        description: `${updatedMeal.name} is now ${updatedMeal.isAvailable ? 'available' : 'unavailable'}.`,
+      });
+    } catch (error) {
+      console.error('Failed to toggle meal availability:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update meal availability. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const getCategoryColor = (category: string) => {
@@ -144,53 +194,61 @@ const AdminDashboard = () => {
         </div>
       </header>
 
-      <main className="p-6">
-        <div className="max-w-7xl mx-auto space-y-6">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">{meals.length}</div>
-                  <div className="text-sm text-muted-foreground">Total Meals</div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-success">{meals.filter(m => m.isAvailable).length}</div>
-                  <div className="text-sm text-muted-foreground">Available</div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-warning">{meals.filter(m => !m.isAvailable).length}</div>
-                  <div className="text-sm text-muted-foreground">Unavailable</div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-accent">{meals.filter(m => m.dietaryRestrictions.includes('vegetarian')).length}</div>
-                  <div className="text-sm text-muted-foreground">Vegetarian</div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+        <main className="p-6">
+          <div className="max-w-7xl mx-auto space-y-6">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">{meals.length}</div>
+                    <div className="text-sm text-muted-foreground">Total Meals</div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-success">{meals.filter(m => m.isAvailable).length}</div>
+                    <div className="text-sm text-muted-foreground">Available</div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-warning">{meals.filter(m => !m.isAvailable).length}</div>
+                    <div className="text-sm text-muted-foreground">Unavailable</div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-accent">{meals.filter(m => m.dietaryRestrictions.includes('vegetarian')).length}</div>
+                    <div className="text-sm text-muted-foreground">Vegetarian</div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
-          {/* Filters */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Filter className="w-5 h-5" />
-                Filter & Search
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+            {loading ? (
+              <div className="flex items-center justify-center py-16">
+                <div className="text-center space-y-4">
+                  <div className="text-lg font-medium text-muted-foreground">Loading meals...</div>
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Filters */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Filter className="w-5 h-5" />
+                      Filter & Search
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
                   <div className="relative">
@@ -315,9 +373,11 @@ const AdminDashboard = () => {
                 ))}
               </div>
             </CardContent>
-          </Card>
-        </div>
-      </main>
+              </Card>
+              </>
+            )}
+          </div>
+        </main>
     </div>
   );
 };

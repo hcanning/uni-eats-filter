@@ -14,7 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      meals: {
+        Row: {
+          availability_friday: boolean
+          availability_monday: boolean
+          availability_thursday: boolean
+          availability_tuesday: boolean
+          availability_wednesday: boolean
+          calories: number
+          carbs: number
+          category: string
+          created_at: string
+          description: string
+          dietary_restrictions: string[] | null
+          fat: number
+          id: string
+          image: string
+          ingredients: string[]
+          is_available: boolean
+          name: string
+          price: number
+          protein: number
+          updated_at: string
+        }
+        Insert: {
+          availability_friday?: boolean
+          availability_monday?: boolean
+          availability_thursday?: boolean
+          availability_tuesday?: boolean
+          availability_wednesday?: boolean
+          calories?: number
+          carbs?: number
+          category: string
+          created_at?: string
+          description: string
+          dietary_restrictions?: string[] | null
+          fat?: number
+          id?: string
+          image: string
+          ingredients?: string[]
+          is_available?: boolean
+          name: string
+          price: number
+          protein?: number
+          updated_at?: string
+        }
+        Update: {
+          availability_friday?: boolean
+          availability_monday?: boolean
+          availability_thursday?: boolean
+          availability_tuesday?: boolean
+          availability_wednesday?: boolean
+          calories?: number
+          carbs?: number
+          category?: string
+          created_at?: string
+          description?: string
+          dietary_restrictions?: string[] | null
+          fat?: number
+          id?: string
+          image?: string
+          ingredients?: string[]
+          is_available?: boolean
+          name?: string
+          price?: number
+          protein?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

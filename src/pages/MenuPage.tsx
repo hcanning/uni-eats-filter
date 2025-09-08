@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
-import { MealFilters } from '@/types/meal';
-import { mockMeals } from '@/data/mealLoader';
+import { useState, useMemo, useEffect } from 'react';
+import { MealFilters, Meal } from '@/types/meal';
+import { mealsService } from '@/services/mealsService';
 import { MenuSidebar } from '@/components/MenuSidebar';
 import { MealCard } from '@/components/MealCard';
 import { DayTabs } from '@/components/DayTabs';
@@ -8,8 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Settings, ChefHat } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 
 const MenuPage = () => {
+  const [meals, setMeals] = useState<Meal[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
   const [filters, setFilters] = useState<MealFilters>({
     category: null,
     dietaryRestrictions: [],
@@ -17,8 +21,30 @@ const MenuPage = () => {
     day: 'monday',
   });
 
+  // Load meals on component mount
+  useEffect(() => {
+    const loadMeals = async () => {
+      try {
+        setLoading(true);
+        const mealsData = await mealsService.getAllMeals();
+        setMeals(mealsData);
+      } catch (error) {
+        console.error('Failed to load meals:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load meals. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMeals();
+  }, [toast]);
+
   const filteredMeals = useMemo(() => {
-    return mockMeals.filter((meal) => {
+    return meals.filter((meal) => {
       // Filter by day availability
       if (!meal.availability[filters.day]) return false;
       
@@ -111,7 +137,11 @@ const MenuPage = () => {
               </div>
             </div>
 
-            {filteredMeals.length === 0 ? (
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="text-lg font-medium text-muted-foreground mb-4">Loading meals...</div>
+              </div>
+            ) : filteredMeals.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 text-center">
                 <ChefHat className="w-16 h-16 text-muted-foreground mb-4" />
                 <h3 className="text-xl font-semibold text-foreground mb-2">No meals found</h3>
