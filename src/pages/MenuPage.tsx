@@ -99,10 +99,10 @@ const MenuPage = () => {
                 <p className="text-muted-foreground">Fresh meals for every taste</p>
               </div>
             </div>
-            <Link to="/admin">
+            <Link to="/auth">
               <Button variant="outline" className="gap-2">
                 <Settings className="w-4 h-4" />
-                Admin Dashboard
+                Admin Login
               </Button>
             </Link>
           </div>
