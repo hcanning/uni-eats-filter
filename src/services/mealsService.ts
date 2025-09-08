@@ -24,7 +24,7 @@ const convertDbRowToMeal = (row: any): Meal => ({
   dietaryRestrictions: row.dietary_restrictions as DietaryRestriction[],
   ingredients: row.ingredients,
   nutrition: {
-    calories: row.calories,
+    calories: parseFloat(row.calories),
     protein: parseFloat(row.protein),
     carbs: parseFloat(row.carbs),
     fat: parseFloat(row.fat),

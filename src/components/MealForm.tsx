@@ -181,8 +181,9 @@ export const MealForm = ({ meal, onSubmit, onCancel }: MealFormProps) => {
               id="calories"
               type="number"
               min="0"
+              step="0.1"
               value={formData.nutrition.calories}
-              onChange={(e) => handleNutritionChange('calories', parseInt(e.target.value) || 0)}
+              onChange={(e) => handleNutritionChange('calories', parseFloat(e.target.value) || 0)}
             />
           </div>
           <div className="space-y-2">
@@ -191,8 +192,9 @@ export const MealForm = ({ meal, onSubmit, onCancel }: MealFormProps) => {
               id="protein"
               type="number"
               min="0"
+              step="0.1"
               value={formData.nutrition.protein}
-              onChange={(e) => handleNutritionChange('protein', parseInt(e.target.value) || 0)}
+              onChange={(e) => handleNutritionChange('protein', parseFloat(e.target.value) || 0)}
             />
           </div>
           <div className="space-y-2">
@@ -201,8 +203,9 @@ export const MealForm = ({ meal, onSubmit, onCancel }: MealFormProps) => {
               id="carbs"
               type="number"
               min="0"
+              step="0.1"
               value={formData.nutrition.carbs}
-              onChange={(e) => handleNutritionChange('carbs', parseInt(e.target.value) || 0)}
+              onChange={(e) => handleNutritionChange('carbs', parseFloat(e.target.value) || 0)}
             />
           </div>
           <div className="space-y-2">
@@ -211,8 +214,9 @@ export const MealForm = ({ meal, onSubmit, onCancel }: MealFormProps) => {
               id="fat"
               type="number"
               min="0"
+              step="0.1"
               value={formData.nutrition.fat}
-              onChange={(e) => handleNutritionChange('fat', parseInt(e.target.value) || 0)}
+              onChange={(e) => handleNutritionChange('fat', parseFloat(e.target.value) || 0)}
             />
           </div>
         </CardContent>
