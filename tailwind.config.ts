@@ -46,6 +46,7 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+          hover: "hsl(var(--card-hover))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -56,6 +57,29 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
+        },
+        university: {
+          primary: "hsl(var(--university-primary))",
+          "primary-foreground": "hsl(var(--university-primary-foreground))",
+          secondary: "hsl(var(--university-secondary))",
+          "secondary-foreground": "hsl(var(--university-secondary-foreground))",
+          accent: "hsl(var(--university-accent))",
+          "accent-foreground": "hsl(var(--university-accent-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        category: {
+          breakfast: "hsl(var(--category-breakfast))",
+          lunch: "hsl(var(--category-lunch))",
+          dinner: "hsl(var(--category-dinner))",
+          snack: "hsl(var(--category-snack))",
+          beverage: "hsl(var(--category-beverage))",
         },
       },
       borderRadius: {
