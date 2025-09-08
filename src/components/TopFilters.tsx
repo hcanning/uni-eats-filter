@@ -170,13 +170,10 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
                 <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   id="max-price"
-                  type="number"
-                  min="0"
-                  max="25"
-                  step="0.5"
+                  type="text"
                   value={maxPriceInput}
                   onChange={(e) => handleMaxPriceChange(e.target.value)}
-                  className="pl-9 w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="pl-9 w-24"
                   placeholder="25.00"
                 />
               </div>
