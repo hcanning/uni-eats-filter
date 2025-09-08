@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { mockMeals } from '@/data/mockMeals';
+import { mockMeals } from '@/data/mealLoader';
 import { Meal, MealFormData } from '@/types/meal';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

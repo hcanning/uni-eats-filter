@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { MealFilters } from '@/types/meal';
-import { mockMeals } from '@/data/mockMeals';
+import { mockMeals } from '@/data/mealLoader';
 import { MenuSidebar } from '@/components/MenuSidebar';
 import { MealCard } from '@/components/MealCard';
 import { DayTabs } from '@/components/DayTabs';
