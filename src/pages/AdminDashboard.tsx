@@ -6,10 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Edit, Trash2, ArrowLeft, Search, Filter } from 'lucide-react';
+import { Plus, Edit, Trash2, ArrowLeft, Search, Filter, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { MealForm } from '@/components/MealForm';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 const AdminDashboard = () => {
   const [meals, setMeals] = useState<Meal[]>(mockMeals);
@@ -18,6 +19,7 @@ const AdminDashboard = () => {
   const [editingMeal, setEditingMeal] = useState<Meal | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const { toast } = useToast();
+  const { logout } = useAuth();
 
   const categories = ['all', 'breakfast', 'lunch', 'dinner', 'snack', 'beverage'];
 
@@ -114,20 +116,26 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-            <DialogTrigger asChild>
-              <Button className="gap-2">
-                <Plus className="w-4 h-4" />
-                Add New Meal
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Add New Meal</DialogTitle>
-              </DialogHeader>
-              <MealForm onSubmit={handleCreateMeal} onCancel={() => setIsFormOpen(false)} />
-            </DialogContent>
-          </Dialog>
+          <div className="flex items-center gap-3">
+            <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+              <DialogTrigger asChild>
+                <Button className="gap-2">
+                  <Plus className="w-4 h-4" />
+                  Add New Meal
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Add New Meal</DialogTitle>
+                </DialogHeader>
+                <MealForm onSubmit={handleCreateMeal} onCancel={() => setIsFormOpen(false)} />
+              </DialogContent>
+            </Dialog>
+            <Button variant="outline" onClick={logout} className="gap-2 text-destructive hover:text-destructive">
+              <LogOut className="w-4 h-4" />
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
 
