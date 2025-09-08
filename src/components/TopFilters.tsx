@@ -174,7 +174,6 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
                   value={maxPriceInput}
                   onChange={(e) => handleMaxPriceChange(e.target.value)}
                   className="pl-9 w-24"
-                  placeholder="25.00"
                 />
               </div>
             </div>
