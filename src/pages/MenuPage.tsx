@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { MealFilters, Meal } from '@/types/meal';
 import { mealsService } from '@/services/mealsService';
-import { MenuSidebar } from '@/components/MenuSidebar';
+import { TopFilters } from '@/components/TopFilters';
 import { MealCard } from '@/components/MealCard';
 import { DayTabs } from '@/components/DayTabs';
 import { Button } from '@/components/ui/button';
@@ -103,14 +103,8 @@ const MenuPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
-      <MenuSidebar
-        filters={filters}
-        onFiltersChange={setFilters}
-        onClearFilters={handleClearFilters}
-      />
-      
-      <div className="flex-1 flex flex-col">
+    <div className="min-h-screen bg-background">
+      <div className="flex flex-col">
         <header className="bg-card border-b border-border px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -131,6 +125,11 @@ const MenuPage = () => {
 
         <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto space-y-6">
+            <TopFilters
+              filters={filters}
+              onFiltersChange={setFilters}
+              onClearFilters={handleClearFilters}
+            />
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h2 className="text-xl font-semibold text-foreground mb-2">

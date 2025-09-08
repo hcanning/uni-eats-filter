@@ -1,0 +1,188 @@
+import { useState } from 'react';
+import { MealFilters, DietaryRestriction } from '@/types/meal';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Slider } from '@/components/ui/slider';
+import { Card, CardContent } from '@/components/ui/card';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuCheckboxItem, 
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator
+} from '@/components/ui/dropdown-menu';
+import { Filter, X, ChevronDown } from 'lucide-react';
+
+interface TopFiltersProps {
+  filters: MealFilters;
+  onFiltersChange: (filters: MealFilters) => void;
+  onClearFilters: () => void;
+}
+
+const categories = [
+  { value: 'breakfast', label: 'Breakfast', color: 'bg-category-breakfast/10 text-category-breakfast' },
+  { value: 'lunch', label: 'Lunch', color: 'bg-category-lunch/10 text-category-lunch' },
+  { value: 'dinner', label: 'Dinner', color: 'bg-category-dinner/10 text-category-dinner' },
+  { value: 'snack', label: 'Snack', color: 'bg-category-snack/10 text-category-snack' },
+  { value: 'beverage', label: 'Beverage', color: 'bg-category-beverage/10 text-category-beverage' },
+] as const;
+
+const dietaryOptions: { value: DietaryRestriction; label: string }[] = [
+  { value: 'vegetarian', label: 'Vegetarian' },
+  { value: 'vegan', label: 'Vegan' },
+  { value: 'gluten-free', label: 'Gluten-Free' },
+  { value: 'dairy-free', label: 'Dairy-Free' },
+  { value: 'nut-free', label: 'Nut-Free' },
+  { value: 'keto', label: 'Keto' },
+  { value: 'low-sodium', label: 'Low Sodium' },
+];
+
+export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFiltersProps) => {
+  const [maxPrice, setMaxPrice] = useState(filters.maxPrice);
+
+  const handleCategoryChange = (category: string, checked: boolean) => {
+    onFiltersChange({
+      ...filters,
+      category: checked ? category as any : null,
+    });
+  };
+
+  const handleDietaryRestrictionChange = (restriction: DietaryRestriction, checked: boolean) => {
+    const updatedRestrictions = checked
+      ? [...filters.dietaryRestrictions, restriction]
+      : filters.dietaryRestrictions.filter(r => r !== restriction);
+
+    onFiltersChange({
+      ...filters,
+      dietaryRestrictions: updatedRestrictions,
+    });
+  };
+
+  const handleMaxPriceChange = (value: number[]) => {
+    const newMaxPrice = value[0];
+    setMaxPrice(newMaxPrice);
+    onFiltersChange({
+      ...filters,
+      maxPrice: newMaxPrice,
+    });
+  };
+
+  const activeFiltersCount = 
+    (filters.category ? 1 : 0) + 
+    filters.dietaryRestrictions.length + 
+    (filters.maxPrice < 25 ? 1 : 0);
+
+  const selectedCategory = categories.find(c => c.value === filters.category);
+
+  return (
+    <Card className="mb-6">
+      <CardContent className="p-4">
+        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
+          {/* Filters Label */}
+          <div className="flex items-center gap-2 min-w-fit">
+            <Filter className="w-5 h-5 text-muted-foreground" />
+            <h3 className="font-semibold text-foreground">Filters</h3>
+            {activeFiltersCount > 0 && (
+              <Badge variant="secondary">
+                {activeFiltersCount}
+              </Badge>
+            )}
+          </div>
+
+          {/* Filter Controls */}
+          <div className="flex flex-col sm:flex-row gap-4 w-full">
+            {/* Category Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="justify-between min-w-[140px]">
+                  {selectedCategory ? (
+                    <Badge className={`${selectedCategory.color} border font-normal`}>
+                      {selectedCategory.label}
+                    </Badge>
+                  ) : (
+                    "Category"
+                  )}
+                  <ChevronDown className="w-4 h-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="start">
+                <DropdownMenuLabel>Categories</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {categories.map((category) => (
+                  <DropdownMenuCheckboxItem
+                    key={category.value}
+                    checked={filters.category === category.value}
+                    onCheckedChange={(checked) => handleCategoryChange(category.value, checked)}
+                  >
+                    <Badge className={`${category.color} border font-normal`}>
+                      {category.label}
+                    </Badge>
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Dietary Restrictions Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="justify-between min-w-[160px]">
+                  {filters.dietaryRestrictions.length > 0 ? (
+                    <Badge className="bg-success/10 text-success border-success/20">
+                      {filters.dietaryRestrictions.length} dietary
+                    </Badge>
+                  ) : (
+                    "Dietary"
+                  )}
+                  <ChevronDown className="w-4 h-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="start">
+                <DropdownMenuLabel>Dietary Restrictions</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {dietaryOptions.map((option) => (
+                  <DropdownMenuCheckboxItem
+                    key={option.value}
+                    checked={filters.dietaryRestrictions.includes(option.value)}
+                    onCheckedChange={(checked) => 
+                      handleDietaryRestrictionChange(option.value, checked)
+                    }
+                  >
+                    {option.label}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Price Slider */}
+            <div className="flex items-center gap-3 min-w-[200px] flex-1">
+              <span className="text-sm text-muted-foreground whitespace-nowrap">Max Price:</span>
+              <Slider
+                value={[maxPrice]}
+                onValueChange={handleMaxPriceChange}
+                max={25}
+                min={0}
+                step={0.5}
+                className="flex-1"
+              />
+              <span className="text-sm font-medium min-w-[50px]">${maxPrice.toFixed(2)}</span>
+            </div>
+          </div>
+
+          {/* Clear Filters */}
+          {activeFiltersCount > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onClearFilters}
+              className="text-muted-foreground hover:text-foreground whitespace-nowrap"
+            >
+              <X className="w-4 h-4 mr-1" />
+              Clear
+            </Button>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
