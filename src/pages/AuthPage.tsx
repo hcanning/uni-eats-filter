@@ -56,9 +56,6 @@ const AuthPage = () => {
           </div>
           <h1 className="text-2xl font-bold text-foreground">Restaurant Owner Portal</h1>
           <p className="text-muted-foreground">Authorized Access Only</p>
-          <div className="bg-muted/50 border border-border rounded-lg p-3 text-sm text-muted-foreground">
-            <strong>Restricted System:</strong> Only howard@canning.dev is authorized to access this system.
-          </div>
         </div>
 
         <Card>
@@ -77,7 +74,7 @@ const AuthPage = () => {
                   <Input
                     id="login-email"
                     type="email"
-                    placeholder="howard@canning.dev"
+                    placeholder="Enter your email"
                     value={loginData.email}
                     onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                     className="pl-10"
