@@ -179,7 +179,7 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
                   onChange={(e) => handleMaxPriceChange(e.target.value)}
                   onFocus={() => setPriceFocused(true)}
                   onBlur={() => setPriceFocused(false)}
-                  className="pl-9 w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="pl-9 w-16 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   placeholder={priceFocused ? '' : '15.00'}
                 />
               </div>
