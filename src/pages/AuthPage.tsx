@@ -58,6 +58,16 @@ const AuthPage = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Check if the email is authorized before attempting signup
+    if (signupData.email !== 'howard@canning.dev') {
+      toast({
+        title: "Unauthorized Email",
+        description: "Only howard@canning.dev is authorized to create an account on this system.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (signupData.password !== signupData.confirmPassword) {
       toast({
         title: "Password mismatch",
@@ -122,10 +132,9 @@ const AuthPage = () => {
             <ChefHat className="w-12 h-12 text-primary" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">Restaurant Owner Portal</h1>
-          <p className="text-muted-foreground">Admin access for restaurant management</p>
+          <p className="text-muted-foreground">Authorized Access Only</p>
           <div className="bg-muted/50 border border-border rounded-lg p-3 text-sm text-muted-foreground">
-            <strong>Note:</strong> Only authorized restaurant staff can edit the menu. 
-            New signups have read-only access.
+            <strong>Restricted System:</strong> Only howard@canning.dev is authorized to access this system.
           </div>
         </div>
 
@@ -152,7 +161,7 @@ const AuthPage = () => {
                       <Input
                         id="login-email"
                         type="email"
-                        placeholder="admin@restaurant.com"
+                        placeholder="howard@canning.dev"
                         value={loginData.email}
                         onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                         className="pl-10"
@@ -216,7 +225,7 @@ const AuthPage = () => {
                       <Input
                         id="signup-email"
                         type="email"
-                        placeholder="admin@restaurant.com"
+                        placeholder="howard@canning.dev"
                         value={signupData.email}
                         onChange={(e) => setSignupData(prev => ({ ...prev, email: e.target.value }))}
                         className="pl-10"

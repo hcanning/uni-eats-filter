@@ -115,6 +115,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      is_authorized_admin: {
+        Args: { user_email: string }
+        Returns: boolean
+      }
       promote_to_admin: {
         Args: { user_email: string }
         Returns: undefined
