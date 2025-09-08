@@ -134,7 +134,7 @@ const MenuPage = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h2 className="text-xl font-semibold text-foreground mb-2">
-                  Today's Menu - {filters.day.charAt(0).toUpperCase() + filters.day.slice(1)}
+                  {filters.day === getCurrentDay() ? "Today's Menu" : "Menu"} - {filters.day.charAt(0).toUpperCase() + filters.day.slice(1)}
                 </h2>
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary" className="font-medium">
