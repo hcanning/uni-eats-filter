@@ -163,7 +163,7 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
             </DropdownMenu>
 
             {/* Price Input */}
-            <div className="flex items-center gap-2 min-w-[180px]">
+            <div className="flex items-center gap-2 min-w-[220px]">
               <label htmlFor="max-price" className="text-sm text-muted-foreground whitespace-nowrap">
                 Max Price:
               </label>
@@ -179,10 +179,16 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
                   onChange={(e) => handleMaxPriceChange(e.target.value)}
                   onFocus={() => setPriceFocused(true)}
                   onBlur={() => setPriceFocused(false)}
-                  className="pl-9 w-16 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="pl-9 w-18 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   placeholder={priceFocused ? '' : '15.00'}
                 />
               </div>
+              <button
+                onClick={onClearFilters}
+                className="text-sm text-muted-foreground hover:text-foreground underline whitespace-nowrap"
+              >
+                Clear Filters
+              </button>
             </div>
           </div>
 
