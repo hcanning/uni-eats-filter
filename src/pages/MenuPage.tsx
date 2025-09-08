@@ -28,7 +28,7 @@ const MenuPage = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const [filters, setFilters] = useState<MealFilters>({
-    category: null,
+    categories: [],
     dietaryRestrictions: [],
     maxPrice: 25,
     day: getCurrentDay(),
@@ -69,8 +69,8 @@ const MenuPage = () => {
       console.log(`Meal ${meal.name} - ${filters.day} availability:`, dayAvailable);
       if (!dayAvailable) return false;
       
-      // Filter by category
-      if (filters.category && meal.category !== filters.category) return false;
+      // Filter by categories
+      if (filters.categories.length > 0 && !filters.categories.includes(meal.category)) return false;
       
       // Filter by dietary restrictions
       if (filters.dietaryRestrictions.length > 0) {
@@ -91,7 +91,7 @@ const MenuPage = () => {
 
   const handleClearFilters = () => {
     setFilters({
-      category: null,
+      categories: [],
       dietaryRestrictions: [],
       maxPrice: 25,
       day: filters.day, // Keep the current day
@@ -139,9 +139,9 @@ const MenuPage = () => {
                   <Badge variant="secondary" className="font-medium">
                     {filteredMeals.length} meal{filteredMeals.length !== 1 ? 's' : ''} available
                   </Badge>
-                  {filters.category && (
+                  {filters.categories.length > 0 && (
                     <Badge className="capitalize bg-primary/10 text-primary border-primary/20">
-                      {filters.category}
+                      {filters.categories.length} categor{filters.categories.length === 1 ? 'y' : 'ies'}
                     </Badge>
                   )}
                   {filters.dietaryRestrictions.length > 0 && (

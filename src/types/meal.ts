@@ -35,7 +35,7 @@ export type DietaryRestriction =
   | 'low-sodium';
 
 export interface MealFilters {
-  category?: 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'beverage' | null;
+  categories: ('breakfast' | 'lunch' | 'dinner' | 'snack' | 'beverage')[];
   dietaryRestrictions: DietaryRestriction[];
   maxPrice: number;
   day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday';

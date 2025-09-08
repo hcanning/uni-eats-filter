@@ -42,9 +42,13 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
   const [maxPrice, setMaxPrice] = useState(filters.maxPrice);
 
   const handleCategoryChange = (category: string, checked: boolean) => {
+    const updatedCategories = checked
+      ? [...filters.categories, category as any]
+      : filters.categories.filter(c => c !== category);
+
     onFiltersChange({
       ...filters,
-      category: checked ? category as any : null,
+      categories: updatedCategories,
     });
   };
 
@@ -69,11 +73,9 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
   };
 
   const activeFiltersCount = 
-    (filters.category ? 1 : 0) + 
+    filters.categories.length + 
     filters.dietaryRestrictions.length + 
     (filters.maxPrice < 25 ? 1 : 0);
-
-  const selectedCategory = categories.find(c => c.value === filters.category);
 
   return (
     <Card className="mb-6">
@@ -96,9 +98,9 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="justify-between min-w-[140px]">
-                  {selectedCategory ? (
-                    <Badge className={`${selectedCategory.color} border font-normal`}>
-                      {selectedCategory.label}
+                  {filters.categories.length > 0 ? (
+                    <Badge className="bg-primary/10 text-primary border-primary/20">
+                      {filters.categories.length} categor{filters.categories.length === 1 ? 'y' : 'ies'}
                     </Badge>
                   ) : (
                     "Category"
@@ -112,7 +114,7 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
                 {categories.map((category) => (
                   <DropdownMenuCheckboxItem
                     key={category.value}
-                    checked={filters.category === category.value}
+                    checked={filters.categories.includes(category.value)}
                     onCheckedChange={(checked) => handleCategoryChange(category.value, checked)}
                   >
                     <Badge className={`${category.color} border font-normal`}>
