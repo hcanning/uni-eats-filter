@@ -42,6 +42,7 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
   const [maxPriceInput, setMaxPriceInput] = useState('');
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const [dietaryDropdownOpen, setDietaryDropdownOpen] = useState(false);
+  const [priceFocused, setPriceFocused] = useState(false);
 
   const handleCategoryChange = (category: string, checked: boolean) => {
     const updatedCategories = checked
@@ -173,8 +174,10 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
                   type="text"
                   value={maxPriceInput}
                   onChange={(e) => handleMaxPriceChange(e.target.value)}
+                  onFocus={() => setPriceFocused(true)}
+                  onBlur={() => setPriceFocused(false)}
                   className="pl-9 w-24"
-                  placeholder="15.00"
+                  placeholder={priceFocused ? '' : '15.00'}
                 />
               </div>
             </div>
