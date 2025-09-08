@@ -40,6 +40,8 @@ const dietaryOptions: { value: DietaryRestriction; label: string }[] = [
 
 export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFiltersProps) => {
   const [maxPrice, setMaxPrice] = useState(filters.maxPrice);
+  const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
+  const [dietaryDropdownOpen, setDietaryDropdownOpen] = useState(false);
 
   const handleCategoryChange = (category: string, checked: boolean) => {
     const updatedCategories = checked
@@ -95,7 +97,7 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
           {/* Filter Controls */}
           <div className="flex flex-col sm:flex-row gap-4 w-full">
             {/* Category Dropdown */}
-            <DropdownMenu>
+            <DropdownMenu open={categoryDropdownOpen} onOpenChange={setCategoryDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="justify-between min-w-[140px]">
                   {filters.categories.length > 0 ? (
@@ -116,6 +118,7 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
                     key={category.value}
                     checked={filters.categories.includes(category.value)}
                     onCheckedChange={(checked) => handleCategoryChange(category.value, checked)}
+                    onSelect={(e) => e.preventDefault()}
                   >
                     <Badge className={`${category.color} border font-normal`}>
                       {category.label}
@@ -126,7 +129,7 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
             </DropdownMenu>
 
             {/* Dietary Restrictions Dropdown */}
-            <DropdownMenu>
+            <DropdownMenu open={dietaryDropdownOpen} onOpenChange={setDietaryDropdownOpen}>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="justify-between min-w-[160px]">
                   {filters.dietaryRestrictions.length > 0 ? (
@@ -149,6 +152,7 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
                     onCheckedChange={(checked) => 
                       handleDietaryRestrictionChange(option.value, checked)
                     }
+                    onSelect={(e) => e.preventDefault()}
                   >
                     {option.label}
                   </DropdownMenuCheckboxItem>
