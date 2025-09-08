@@ -13,7 +13,7 @@ const MenuPage = () => {
   const [filters, setFilters] = useState<MealFilters>({
     category: null,
     dietaryRestrictions: [],
-    priceRange: { min: 0, max: 25 },
+    maxPrice: 25,
     day: 'monday',
   });
 
@@ -33,8 +33,8 @@ const MenuPage = () => {
         if (!hasAllRestrictions) return false;
       }
       
-      // Filter by price range
-      if (meal.price < filters.priceRange.min || meal.price > filters.priceRange.max) {
+      // Filter by max price
+      if (meal.price > filters.maxPrice) {
         return false;
       }
       
@@ -46,7 +46,7 @@ const MenuPage = () => {
     setFilters({
       category: null,
       dietaryRestrictions: [],
-      priceRange: { min: 0, max: 25 },
+      maxPrice: 25,
       day: filters.day, // Keep the current day
     });
   };

@@ -37,10 +37,7 @@ export type DietaryRestriction =
 export interface MealFilters {
   category?: 'breakfast' | 'lunch' | 'dinner' | 'snack' | 'beverage' | null;
   dietaryRestrictions: DietaryRestriction[];
-  priceRange: {
-    min: number;
-    max: number;
-  };
+  maxPrice: number;
   day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday';
 }
 

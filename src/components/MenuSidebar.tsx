@@ -33,7 +33,7 @@ const dietaryOptions: { value: DietaryRestriction; label: string }[] = [
 ];
 
 export const MenuSidebar = ({ filters, onFiltersChange, onClearFilters }: MenuSidebarProps) => {
-  const [priceRange, setPriceRange] = useState([filters.priceRange.min, filters.priceRange.max]);
+  const [maxPrice, setMaxPrice] = useState(filters.maxPrice);
 
   const handleCategoryChange = (category: string) => {
     onFiltersChange({
@@ -53,18 +53,19 @@ export const MenuSidebar = ({ filters, onFiltersChange, onClearFilters }: MenuSi
     });
   };
 
-  const handlePriceRangeChange = (value: number[]) => {
-    setPriceRange(value);
+  const handleMaxPriceChange = (value: number[]) => {
+    const newMaxPrice = value[0];
+    setMaxPrice(newMaxPrice);
     onFiltersChange({
       ...filters,
-      priceRange: { min: value[0], max: value[1] },
+      maxPrice: newMaxPrice,
     });
   };
 
   const activeFiltersCount = 
     (filters.category ? 1 : 0) + 
     filters.dietaryRestrictions.length + 
-    (filters.priceRange.min > 0 || filters.priceRange.max < 25 ? 1 : 0);
+    (filters.maxPrice < 25 ? 1 : 0);
 
   return (
     <div className="w-80 bg-sidebar border-r border-sidebar-border p-6 space-y-6 overflow-y-auto">
@@ -137,22 +138,25 @@ export const MenuSidebar = ({ filters, onFiltersChange, onClearFilters }: MenuSi
 
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Price Range</CardTitle>
+          <CardTitle className="text-base">Maximum Price</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-3">
             <Slider
-              value={priceRange}
-              onValueChange={handlePriceRangeChange}
+              value={[maxPrice]}
+              onValueChange={handleMaxPriceChange}
               max={25}
               min={0}
               step={0.5}
               className="w-full"
             />
             <div className="flex items-center justify-between text-sm text-muted-foreground">
-              <span>${priceRange[0].toFixed(2)}</span>
-              <span>${priceRange[1].toFixed(2)}</span>
+              <span>$0.00</span>
+              <span>${maxPrice.toFixed(2)}</span>
             </div>
+            <p className="text-xs text-muted-foreground">
+              Show meals under ${maxPrice.toFixed(2)}
+            </p>
           </div>
         </CardContent>
       </Card>
