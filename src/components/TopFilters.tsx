@@ -39,7 +39,7 @@ const dietaryOptions: { value: DietaryRestriction; label: string }[] = [
 ];
 
 export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFiltersProps) => {
-  const [maxPrice, setMaxPrice] = useState(filters.maxPrice);
+  const [maxPriceInput, setMaxPriceInput] = useState('');
   const [categoryDropdownOpen, setCategoryDropdownOpen] = useState(false);
   const [dietaryDropdownOpen, setDietaryDropdownOpen] = useState(false);
 
@@ -66,9 +66,9 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
   };
 
   const handleMaxPriceChange = (value: string) => {
-    const numValue = parseFloat(value) || 0;
+    setMaxPriceInput(value);
+    const numValue = parseFloat(value) || 25; // Default to 25 if empty or invalid
     const validValue = Math.min(Math.max(numValue, 0), 25); // Clamp between 0 and 25
-    setMaxPrice(validValue);
     onFiltersChange({
       ...filters,
       maxPrice: validValue,
@@ -174,9 +174,9 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
                   min="0"
                   max="25"
                   step="0.5"
-                  value={maxPrice}
+                  value={maxPriceInput}
                   onChange={(e) => handleMaxPriceChange(e.target.value)}
-                  className="pl-9 w-24"
+                  className="pl-9 w-24 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   placeholder="25.00"
                 />
               </div>
