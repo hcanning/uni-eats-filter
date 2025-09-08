@@ -10,6 +10,19 @@ import { Settings, ChefHat } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
+const getCurrentDay = (): 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' => {
+  const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
+  const weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'] as const;
+  
+  // If it's weekend (0 = Sunday, 6 = Saturday), default to Monday
+  if (today === 0 || today === 6) {
+    return 'monday';
+  }
+  
+  // Convert to our day format (Monday = 1, so today-1)
+  return weekdays[today - 1];
+};
+
 const MenuPage = () => {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +31,7 @@ const MenuPage = () => {
     category: null,
     dietaryRestrictions: [],
     maxPrice: 25,
-    day: 'monday',
+    day: getCurrentDay(),
   });
 
   // Load meals on component mount
