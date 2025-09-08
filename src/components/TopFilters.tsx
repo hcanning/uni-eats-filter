@@ -161,7 +161,7 @@ export const TopFilters = ({ filters, onFiltersChange, onClearFilters }: TopFilt
             </DropdownMenu>
 
             {/* Price Slider */}
-            <div className="flex items-center gap-3 min-w-[200px] flex-1">
+            <div className="flex items-center gap-3 min-w-[200px] max-w-[250px]">
               <span className="text-sm text-muted-foreground whitespace-nowrap">Max Price:</span>
               <Slider
                 value={[maxPrice]}
