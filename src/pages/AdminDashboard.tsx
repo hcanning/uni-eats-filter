@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { mockMeals } from '@/data/mealLoader';
+import { useState, useEffect } from 'react';
+import { mockMeals, saveMealsToStorage, loadMealsFromStorage } from '@/data/mealLoader';
 import { Meal, MealFormData } from '@/types/meal';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,7 +13,12 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 
 const AdminDashboard = () => {
-  const [meals, setMeals] = useState<Meal[]>(mockMeals);
+  const [meals, setMeals] = useState<Meal[]>(loadMealsFromStorage());
+
+  // Save to localStorage whenever meals change
+  useEffect(() => {
+    saveMealsToStorage(meals);
+  }, [meals]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [editingMeal, setEditingMeal] = useState<Meal | null>(null);

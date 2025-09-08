@@ -13,9 +13,11 @@ const imageMap: Record<string, string> = {
   'vegetarian-meal.jpg': vegetarianImage,
 };
 
+const STORAGE_KEY = 'meals_data';
+
 // Convert JSON data to properly typed Meal objects
-export const loadMeals = (): Meal[] => {
-  return mealsData.map((mealData: any) => ({
+const convertJsonToMeals = (data: any[]): Meal[] => {
+  return data.map((mealData: any) => ({
     ...mealData,
     image: imageMap[mealData.image] || mealData.image,
     createdAt: new Date(mealData.createdAt),
@@ -23,4 +25,31 @@ export const loadMeals = (): Meal[] => {
   }));
 };
 
-export const mockMeals = loadMeals();
+// Save meals to localStorage (never modifies the JSON file)
+export const saveMealsToStorage = (meals: Meal[]): void => {
+  const mealsForStorage = meals.map(meal => ({
+    ...meal,
+    createdAt: meal.createdAt.toISOString(),
+    updatedAt: meal.updatedAt.toISOString(),
+  }));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(mealsForStorage));
+};
+
+// Load meals from localStorage or fallback to JSON file
+export const loadMealsFromStorage = (): Meal[] => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsedData = JSON.parse(stored);
+      return convertJsonToMeals(parsedData);
+    }
+  } catch (error) {
+    console.warn('Failed to load meals from localStorage, falling back to JSON file');
+  }
+  
+  // Fallback to original JSON file (read-only)
+  return convertJsonToMeals(mealsData);
+};
+
+// Initial load - this is the main export
+export const mockMeals = loadMealsFromStorage();
