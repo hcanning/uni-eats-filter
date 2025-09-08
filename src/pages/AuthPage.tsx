@@ -121,8 +121,12 @@ const AuthPage = () => {
           <div className="flex justify-center">
             <ChefHat className="w-12 h-12 text-primary" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Admin Portal</h1>
-          <p className="text-muted-foreground">Sign in to manage your restaurant menu</p>
+          <h1 className="text-2xl font-bold text-foreground">Restaurant Owner Portal</h1>
+          <p className="text-muted-foreground">Admin access for restaurant management</p>
+          <div className="bg-muted/50 border border-border rounded-lg p-3 text-sm text-muted-foreground">
+            <strong>Note:</strong> Only authorized restaurant staff can edit the menu. 
+            New signups have read-only access.
+          </div>
         </div>
 
         <Card>
