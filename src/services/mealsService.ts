@@ -1,11 +1,12 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Meal, MealFormData, DietaryRestriction } from '@/types/meal';
+import { imageUploadService } from './imageUploadService';
 import breakfastImage from '@/assets/breakfast-meal.jpg';
 import lunchImage from '@/assets/lunch-meal.jpg';
 import dinnerImage from '@/assets/dinner-meal.jpg';
 import vegetarianImage from '@/assets/vegetarian-meal.jpg';
 
-// Map image filenames to actual imports
+// Map image filenames to actual imports for backwards compatibility
 const imageMap: Record<string, string> = {
   'breakfast-meal.jpg': breakfastImage,
   'lunch-meal.jpg': lunchImage,
@@ -13,12 +14,28 @@ const imageMap: Record<string, string> = {
   'vegetarian-meal.jpg': vegetarianImage,
 };
 
+// Get image URL - either from storage or static assets
+const getImageUrl = (imagePath: string): string => {
+  // If it's a static image filename, use the mapped asset
+  if (imageMap[imagePath]) {
+    return imageMap[imagePath];
+  }
+  
+  // If it starts with http(s), it's already a full URL
+  if (imagePath.startsWith('http')) {
+    return imagePath;
+  }
+  
+  // Otherwise, assume it's a storage path and get the public URL
+  return imageUploadService.getImageUrl(imagePath);
+};
+
 // Convert database row to Meal object
 const convertDbRowToMeal = (row: any): Meal => ({
   id: row.id,
   name: row.name,
   description: row.description,
-  image: imageMap[row.image] || row.image,
+  image: getImageUrl(row.image),
   price: parseFloat(row.price),
   category: row.category,
   dietaryRestrictions: row.dietary_restrictions as DietaryRestriction[],
