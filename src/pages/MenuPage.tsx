@@ -57,9 +57,17 @@ const MenuPage = () => {
   }, [toast]);
 
   const filteredMeals = useMemo(() => {
+    console.log('Filtering meals:', { 
+      totalMeals: meals.length, 
+      selectedDay: filters.day,
+      meals: meals.map(m => ({ name: m.name, availability: m.availability }))
+    });
+    
     return meals.filter((meal) => {
       // Filter by day availability
-      if (!meal.availability[filters.day]) return false;
+      const dayAvailable = meal.availability[filters.day];
+      console.log(`Meal ${meal.name} - ${filters.day} availability:`, dayAvailable);
+      if (!dayAvailable) return false;
       
       // Filter by category
       if (filters.category && meal.category !== filters.category) return false;
@@ -79,7 +87,7 @@ const MenuPage = () => {
       
       return true;
     });
-  }, [filters]);
+  }, [meals, filters]);
 
   const handleClearFilters = () => {
     setFilters({
