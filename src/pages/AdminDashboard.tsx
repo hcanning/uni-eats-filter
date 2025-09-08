@@ -186,6 +186,22 @@ const AdminDashboard = () => {
                 <MealForm onSubmit={handleCreateMeal} onCancel={() => setIsFormOpen(false)} />
               </DialogContent>
             </Dialog>
+            
+            {/* Edit Meal Dialog */}
+            <Dialog open={!!editingMeal} onOpenChange={(open) => !open && setEditingMeal(null)}>
+              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Edit Meal</DialogTitle>
+                </DialogHeader>
+                {editingMeal && (
+                  <MealForm 
+                    meal={editingMeal}
+                    onSubmit={handleUpdateMeal}
+                    onCancel={() => setEditingMeal(null)}
+                  />
+                )}
+              </DialogContent>
+            </Dialog>
             <Button variant="outline" onClick={logout} className="gap-2 text-destructive hover:text-destructive">
               <LogOut className="w-4 h-4" />
               Logout
@@ -337,37 +353,21 @@ const AdminDashboard = () => {
                         onClick={() => toggleMealAvailability(meal.id)}
                       >
                         {meal.isAvailable ? 'Disable' : 'Enable'}
-                      </Button>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setEditingMeal(meal)}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                          <DialogHeader>
-                            <DialogTitle>Edit Meal</DialogTitle>
-                          </DialogHeader>
-                          {editingMeal && (
-                            <MealForm 
-                              meal={editingMeal}
-                              onSubmit={handleUpdateMeal}
-                              onCancel={() => setEditingMeal(null)}
-                            />
-                          )}
-                        </DialogContent>
-                      </Dialog>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteMeal(meal.id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                       </Button>
+                       <Button
+                         variant="outline"
+                         size="sm"
+                         onClick={() => setEditingMeal(meal)}
+                       >
+                         <Edit className="w-4 h-4" />
+                       </Button>
+                       <Button
+                         variant="outline"
+                         size="sm"
+                         onClick={() => handleDeleteMeal(meal.id)}
+                       >
+                         <Trash2 className="w-4 h-4" />
+                       </Button>
                     </div>
                   </div>
                 ))}
