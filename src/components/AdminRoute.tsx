@@ -59,20 +59,7 @@ export const AdminRoute = ({ children }: AdminRouteProps) => {
   }
 
   if (isAdmin === false) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <div className="max-w-md text-center space-y-4">
-          <div className="text-6xl">🔒</div>
-          <h1 className="text-2xl font-bold text-foreground">Access Restricted</h1>
-          <p className="text-muted-foreground">
-            You don't have admin privileges to access this area. Only authorized restaurant staff can manage the menu.
-          </p>
-          <div className="space-y-2">
-            <Navigate to="/" replace />
-          </div>
-        </div>
-      </div>
-    );
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
